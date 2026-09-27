@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+/* Paleta institucional Santo Tomás (santotomas.cl) */
+@theme {
+  --color-st-darker: #00362f;
+  --color-st-dark: #004f45;
+  --color-st: #008272;
+  --color-st-light: #009c88;
+  --color-st-lighter: #00b59d;
+  --color-st-mist: #eef6f4;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #f7fbfa;
+  color: #10201d;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background-color: #009c88;
+  color: #ffffff;
+}
+
+/* Trama de puntos sutil para fondos oscuros (hero) */
+.bg-dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Trama de puntos sutil para fondos claros */
+.bg-dot-grid-light {
+  background-image: radial-gradient(rgba(0, 79, 69, 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Animaciones sobrias del hero */
+@keyframes st-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes st-breathe {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+@keyframes st-orbit {
+  to { transform: rotate(360deg); }
+}
+
+.animate-st-fade-up {
+  animation: st-fade-up 0.7s ease-out both;
+}
+
+.animate-st-breathe {
+  animation: st-breathe 7s ease-in-out infinite;
+}
+
+.animate-st-orbit-60 {
+  animation: st-orbit 60s linear infinite;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-st-fade-up,
+  .animate-st-breathe,
+  .animate-st-orbit-60 {
+    animation: none;
+  }
+}
