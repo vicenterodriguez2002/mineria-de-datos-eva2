@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* Paleta institucional Santo Tomás (santotomas.cl) */
 @theme {
   --color-st-darker: #00362f;
   --color-st-dark: #004f45;
@@ -28,19 +27,16 @@ body {
   color: #ffffff;
 }
 
-/* Trama de puntos sutil para fondos oscuros (hero) */
 .bg-dot-grid {
   background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
   background-size: 22px 22px;
 }
 
-/* Trama de puntos sutil para fondos claros */
 .bg-dot-grid-light {
   background-image: radial-gradient(rgba(0, 79, 69, 0.12) 1px, transparent 1px);
   background-size: 22px 22px;
 }
 
-/* Animaciones sobrias del hero */
 @keyframes st-fade-up {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: none; }

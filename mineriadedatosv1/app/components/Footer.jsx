@@ -20,11 +20,9 @@ export default function Footer() {
 
   return (
     <footer className="bg-st-darker text-white">
-      {/* Acento institucional como en santotomas.cl */}
       <div className="h-1 bg-st-light" aria-hidden="true" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
-        {/* Marca */}
         <div>
           <div className="flex items-center gap-3">
             <Image
@@ -47,7 +45,6 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Curso */}
         <nav aria-label="Información del curso">
           <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-st-lighter">
             Curso
@@ -62,7 +59,6 @@ export default function Footer() {
           </dl>
         </nav>
 
-        {/* Equipo */}
         <nav aria-label="Equipo del proyecto">
           <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-st-lighter">
             Equipo
