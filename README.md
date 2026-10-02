@@ -2,10 +2,6 @@
 
 CORREO PROFESOR: [fvargas21@santotomas.cl](mailto:fvargas21@santotomas.cl)
 
-
-
-TRELLO : https://trello.com/invite/b/6ab66b59d47a8a018a47f500/ATTI0c679a2f819a5b9e2eefef5db1cafc5eE3D13610/mineria-de-datos
-
 GITHUB: https://github.com/vicenterodriguez2002/mineria-de-datos-eva2
 
 DATASET: [MINERIA DE DATOS \_ RESPALDO](https://alumnossantotomas-my.sharepoint.com/:f:/g/personal/v_rodriguez78_alumnos_santotomas_cl/IgBv3I2ei_utTYZs7YjWb0coAQ6hcUbFx67OJwUIw9SiA2U?e=P0APs5)
