@@ -13,7 +13,6 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-st-dark text-white shadow-lg shadow-st-darker/30">
-      {/* Franja superior institucional */}
       <div className="bg-st-darker">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex items-center justify-between text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/70">
           <span>Minería de Datos · Presentación</span>
@@ -41,7 +40,6 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* Navegación escritorio */}
         <nav aria-label="Navegación principal" className="ml-auto hidden md:block">
           <ul className="flex items-center gap-1">
             {NAV_LINKS.map((link) => (
@@ -57,7 +55,6 @@ export default function Header() {
           </ul>
         </nav>
 
-        {/* Botón menú móvil */}
         <button
           type="button"
           className="ml-auto md:hidden inline-flex items-center justify-center w-11 h-11 rounded-lg hover:bg-white/10 transition-colors focus-visible:outline-2 focus-visible:outline-st-lighter"
@@ -74,7 +71,6 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Navegación móvil */}
       {open && (
         <nav id="mobile-nav" aria-label="Navegación móvil" className="md:hidden border-t border-white/10">
           <ul className="px-4 py-3 space-y-1">
@@ -93,7 +89,6 @@ export default function Header() {
         </nav>
       )}
 
-      {/* Borde institucional como en santotomas.cl */}
       <div className="h-1 bg-st-light" aria-hidden="true" />
     </header>
   );
