@@ -1,0 +1,20 @@
+services:
+  flask-api:
+    build: .
+    image: flask-csv-api
+    container_name: flask-csv-api
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    command:
+      - gunicorn
+      - --bind
+      - 0.0.0.0:5000
+      - --workers
+      - "1"
+      - --reload
+      - --reload-engine
+      - poll
+      - app:app
+    restart: unless-stopped

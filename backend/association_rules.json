@@ -1,0 +1,122 @@
+[
+  {
+    "antecedents": [
+      "High_Income",
+      "Education_Graduation",
+      "High_Recency"
+    ],
+    "consequents": [
+      "High_Spend"
+    ],
+    "support": 0.11403508771929824,
+    "confidence": 0.9069767441860465,
+    "lift": 1.8174963662790697
+  },
+  {
+    "antecedents": [
+      "High_Income",
+      "Education_Graduation"
+    ],
+    "consequents": [
+      "High_Spend"
+    ],
+    "support": 0.22855750487329435,
+    "confidence": 0.9036608863198458,
+    "lift": 1.8108516979768785
+  },
+  {
+    "antecedents": [
+      "High_Spend",
+      "Education_Graduation"
+    ],
+    "consequents": [
+      "High_Income"
+    ],
+    "support": 0.22855750487329435,
+    "confidence": 0.8967495219885276,
+    "lift": 1.804049038353391
+  },
+  {
+    "antecedents": [
+      "High_Spend",
+      "Education_Graduation",
+      "High_Recency"
+    ],
+    "consequents": [
+      "High_Income"
+    ],
+    "support": 0.11403508771929824,
+    "confidence": 0.8897338403041825,
+    "lift": 1.78993513755312
+  },
+  {
+    "antecedents": [
+      "Marital_Married",
+      "High_Spend"
+    ],
+    "consequents": [
+      "High_Income"
+    ],
+    "support": 0.17251461988304093,
+    "confidence": 0.885,
+    "lift": 1.7804117647058824
+  },
+  {
+    "antecedents": [
+      "High_Income",
+      "High_Recency"
+    ],
+    "consequents": [
+      "High_Spend"
+    ],
+    "support": 0.22173489278752437,
+    "confidence": 0.8852140077821011,
+    "lift": 1.7738858827821011
+  },
+  {
+    "antecedents": [
+      "High_Spend",
+      "High_Recency"
+    ],
+    "consequents": [
+      "High_Income"
+    ],
+    "support": 0.22173489278752437,
+    "confidence": 0.8800773694390716,
+    "lift": 1.7705085902833086
+  },
+  {
+    "antecedents": [
+      "High_Income"
+    ],
+    "consequents": [
+      "High_Spend"
+    ],
+    "support": 0.439083820662768,
+    "confidence": 0.8833333333333334,
+    "lift": 1.7701171875000004
+  },
+  {
+    "antecedents": [
+      "High_Spend"
+    ],
+    "consequents": [
+      "High_Income"
+    ],
+    "support": 0.439083820662768,
+    "confidence": 0.8798828125,
+    "lift": 1.7701171875000001
+  },
+  {
+    "antecedents": [
+      "High_Spend",
+      "Marital_Together"
+    ],
+    "consequents": [
+      "High_Income"
+    ],
+    "support": 0.10916179337231968,
+    "confidence": 0.8784313725490196,
+    "lift": 1.7671972318339102
+  }
+]
