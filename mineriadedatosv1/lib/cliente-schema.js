@@ -1,10 +1,7 @@
-/**
- * Campos del formulario Evaluador de Clientes.
- * `key` = columna real de marketing_campaign (el mismo nombre que devuelve FastAPI).
- * No se incluyen ID (solo referencia), Response (es la etiqueta) ni
- * Z_CostContact / Z_Revenue (constantes 3 y 11 en todo el dataset).
- * `segmento` no es columna del Excel: si FastAPI lo manda, el buscador lo muestra.
- */
+const OPCIONES_CAMPANA = [
+  { value: 0, label: 'No aceptó la campaña' },
+  { value: 1, label: 'Sí aceptó la campaña' },
+];
 
 export const CLIENTE_SCHEMA = [
   {
@@ -71,11 +68,11 @@ export const CLIENTE_SCHEMA = [
   { key: 'NumCatalogPurchases', label: 'Compras por catálogo', type: 'number', min: 0, max: 30, step: 1, default: 0, group: 'Canales' },
   { key: 'NumStorePurchases', label: 'Compras en tienda', type: 'number', min: 0, max: 20, step: 1, default: 0, group: 'Canales' },
   { key: 'NumWebVisitsMonth', label: 'Visitas web / mes', type: 'number', min: 0, max: 30, step: 1, default: 0, group: 'Canales' },
-  { key: 'AcceptedCmp1', label: 'Aceptó campaña 1', type: 'number', min: 0, max: 1, step: 1, default: 0, group: 'Historial' },
-  { key: 'AcceptedCmp2', label: 'Aceptó campaña 2', type: 'number', min: 0, max: 1, step: 1, default: 0, group: 'Historial' },
-  { key: 'AcceptedCmp3', label: 'Aceptó campaña 3', type: 'number', min: 0, max: 1, step: 1, default: 0, group: 'Historial' },
-  { key: 'AcceptedCmp4', label: 'Aceptó campaña 4', type: 'number', min: 0, max: 1, step: 1, default: 0, group: 'Historial' },
-  { key: 'AcceptedCmp5', label: 'Aceptó campaña 5', type: 'number', min: 0, max: 1, step: 1, default: 0, group: 'Historial' },
+  { key: 'AcceptedCmp1', label: 'Aceptó campaña 1', type: 'select', options: OPCIONES_CAMPANA, default: 0, group: 'Historial' },
+  { key: 'AcceptedCmp2', label: 'Aceptó campaña 2', type: 'select', options: OPCIONES_CAMPANA, default: 0, group: 'Historial' },
+  { key: 'AcceptedCmp3', label: 'Aceptó campaña 3', type: 'select', options: OPCIONES_CAMPANA, default: 0, group: 'Historial' },
+  { key: 'AcceptedCmp4', label: 'Aceptó campaña 4', type: 'select', options: OPCIONES_CAMPANA, default: 0, group: 'Historial' },
+  { key: 'AcceptedCmp5', label: 'Aceptó campaña 5', type: 'select', options: OPCIONES_CAMPANA, default: 0, group: 'Historial' },
   {
     key: 'Complain',
     label: '¿Reclamó alguna vez?',
@@ -100,6 +97,10 @@ export function coerceClientePayload(raw) {
   const out = { ...raw };
   for (const f of CLIENTE_SCHEMA) {
     if (f.type === 'number') {
+      if (out[f.key] === '' || out[f.key] == null) {
+        out[f.key] = null;
+        continue;
+      }
       const n = Number(out[f.key]);
       out[f.key] = Number.isFinite(n) ? n : f.default;
     } else if (f.type === 'date') {

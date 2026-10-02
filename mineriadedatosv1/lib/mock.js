@@ -1,23 +1,9 @@
-/**
- * Mocks locales. Se usan cuando NO hay backend configurado
- * (NEXT_PUBLIC_API_URL / API_URL vacíos) para que la demo funcione
- * y el front quede listo para conectar la API real.
- *
- * El contenido fijo del DIAGNÓSTICO vive en
- * app/api/diagnostico/datos.js (obtener_datos_card, obtener_clusters...).
- * Aquí solo queda la heurística demo del EVALUADOR.
- */
+import { API_CONFIG } from './api/config';
 
-import { API_CONFIG } from './api-config';
-
-/**
- * Heurística demo que imita Árbol de Decisión + K-Means + Apriori.
- * El backend real debe reemplazar este cálculo.
- */
 export function mockEvaluar(payload = {}) {
   const n = (v, d = 0) => (Number.isFinite(Number(v)) ? Number(v) : d);
 
-  const income = n(payload.Income, 50000);
+  const income = payload.Income == null ? null : n(payload.Income, 50000);
   const recency = n(payload.Recency, 30);
   const web = n(payload.NumWebPurchases, 0);
   const store = n(payload.NumStorePurchases, 0);
@@ -31,7 +17,7 @@ export function mockEvaluar(payload = {}) {
   const kids = n(payload.Kidhome) + n(payload.Teenhome);
 
   let score = 0.08;
-  score += Math.min(0.25, (income / 100000) * 0.25);
+  if (income !== null) score += Math.min(0.25, (income / 100000) * 0.25);
   score += Math.min(0.15, (gastoTotal / 2000) * 0.15);
   score += accepted * 0.08;
   score += Math.min(0.08, (web + store) * 0.012);
@@ -44,14 +30,12 @@ export function mockEvaluar(payload = {}) {
   const umbral = API_CONFIG.umbralDefecto;
   const contactar = probabilidad >= umbral;
 
-  // K-Means aproximado
   let cluster = 1;
   let clusterNombre = 'Ocasionales';
-  if (income >= 70000 && gastoTotal >= 900) { cluster = 0; clusterNombre = 'Premium'; }
+  if (income !== null && income >= 70000 && gastoTotal >= 900) { cluster = 0; clusterNombre = 'Premium'; }
   else if (web >= 5 || deals >= 3) { cluster = 2; clusterNombre = 'Digitales & Ofertas'; }
   else if (kids >= 1 && store >= 4) { cluster = 3; clusterNombre = 'Tradicionales'; }
 
-  // Apriori demo
   const reglas = [];
   if (n(payload.MntWines) > 200) reglas.push({ antecedente: ['Vinos'], consecuente: ['Carnes finas'], lift: 2.4, soporte: 0.18 });
   if (web >= 5) reglas.push({ antecedente: ['Compra web'], consecuente: ['Oferta personalizada web'], lift: 1.9, soporte: 0.22 });

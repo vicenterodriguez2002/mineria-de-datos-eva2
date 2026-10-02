@@ -23,9 +23,9 @@ export default function ApiStatus({ compact = false }) {
       <span className="font-semibold text-slate-700">{label}</span>
       <span className="text-xs text-slate-500">
         {mode === 'mock'
-          ? 'Configura NEXT_PUBLIC_API_URL en .env.local para usar el backend real.'
+          ? 'Configura API_URL en .env.local para usar el backend Flask.'
           : mode === 'api'
-            ? 'Las predicciones vienen del backend.'
+            ? 'Diagnóstico y estado salen del backend Flask.'
             : ''}
       </span>
       <button

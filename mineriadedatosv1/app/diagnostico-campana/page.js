@@ -41,7 +41,7 @@ export default function DiagnosticoCampana() {
                 ¿Listo para evaluar a un cliente?
               </h2>
               <p className="mt-1 text-sm text-white/70">
-                Usa el umbral del 27,3% y los segmentos para priorizar a quién contactar.
+                Usa el punto de equilibrio que muestra el diagnóstico para priorizar a quién contactar.
               </p>
             </div>
             <div className="flex flex-wrap gap-3 shrink-0">

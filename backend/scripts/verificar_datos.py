@@ -1,9 +1,11 @@
 import pandas as pd
 import requests
 import json
+from pathlib import Path
 
 
-df = pd.read_excel(r'C:\Users\Laboratorio\Downloads\Api-Backend\Api-Backend\backend\dataset_original.xlsx')
+DATASET_ORIGINAL = Path(__file__).resolve().parents[1] / "data" / "dataset_original.csv"
+df = pd.read_csv(DATASET_ORIGINAL)
 
 print('=' * 60)
 print('DATOS DEL DATASET ORIGINAL')

@@ -1,24 +1,34 @@
+import axios from 'axios';
 import { NextResponse } from 'next/server';
-import { proxyToBackend, jsonMock } from '@/lib/server';
-import { API_CONFIG } from '@/lib/api-config';
-import { obtener_clientes, obtener_cliente_por_id } from './datos';
+
+
+const API_URL = process.env.API_URL;
+
+const noStore = { 'Cache-Control': 'no-store, max-age=0' };
 
 export async function GET(request) {
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id') || '';
-
-  const suffix = id ? `?id=${encodeURIComponent(id)}` : '';
-  const proxied = await proxyToBackend(`${API_CONFIG.paths.clientes}${suffix}`);
-  if (proxied) return proxied;
-
-  if (id) {
-    const cliente = await obtener_cliente_por_id(id);
-    if (!cliente) {
-      return NextResponse.json({ error: `Cliente ${id} no encontrado.` }, { status: 404 });
-    }
-    return jsonMock({ source: 'mock', ...cliente });
+  if (!API_URL) {
+    return NextResponse.json(
+      { error: 'Falta API_URL en .env.local.' },
+      { status: 503, headers: noStore }
+    );
   }
 
-  const clientes = await obtener_clientes();
-  return jsonMock({ source: 'mock', count: clientes.length, clientes });
+  try {
+    const parametros = new URL(request.url).searchParams;
+    const response = await axios.get(`${API_URL}/api/clientes`, {
+      params: {
+        buscar: parametros.get('buscar') || '',
+        limite: parametros.get('limite') || '20',
+      },
+    });
+    return NextResponse.json(response.data, { headers: noStore });
+  } catch (err) {
+    const status = err.response?.status || 502;
+    const data = err.response?.data;
+    return NextResponse.json(
+      { error: data?.error || data?.message || 'No se pudo alcanzar el Flask.' },
+      { status, headers: noStore }
+    );
+  }
 }

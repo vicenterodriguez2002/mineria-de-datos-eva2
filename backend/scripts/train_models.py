@@ -11,7 +11,13 @@ from mlxtend.preprocessing import TransactionEncoder
 import joblib
 import json
 import warnings
+from pathlib import Path
 warnings.filterwarnings('ignore')
+
+BACKEND_ROOT = Path(__file__).resolve().parents[1]
+DATASET_PREPARADO = BACKEND_ROOT / "data" / "dataset_preparado.csv"
+MODELS_PATH = BACKEND_ROOT / "models" / "models.joblib"
+RULES_PATH = BACKEND_ROOT / "models" / "association_rules.json"
 
 
 def load_and_preprocess_data(filepath):
@@ -179,8 +185,8 @@ def save_models(kmeans, dt_final, le_education, le_marital, scaler,
         'numeric_features': numeric_features
     }
 
-    joblib.dump(models, 'models.joblib')
-    print("Modelos guardados en 'models.joblib'")
+    joblib.dump(models, MODELS_PATH)
+    print(f"Modelos guardados en '{MODELS_PATH}'")
 
 
     if not rules.empty:
@@ -193,9 +199,9 @@ def save_models(kmeans, dt_final, le_education, le_marital, scaler,
                 'confidence': float(rule['confidence']),
                 'lift': float(rule['lift'])
             })
-        with open('association_rules.json', 'w') as f:
+        with open(RULES_PATH, 'w', encoding='utf-8') as f:
             json.dump(rules_dict, f, indent=2)
-        print("Reglas guardadas en 'association_rules.json'")
+        print(f"Reglas guardadas en '{RULES_PATH}'")
 
 
 def main():
@@ -205,7 +211,7 @@ def main():
 
 
     df_processed, df_scaled, le_education, le_marital, scaler, numeric_features =\
-        load_and_preprocess_data('dataset_preparado.csv')
+        load_and_preprocess_data(DATASET_PREPARADO)
 
 
     kmeans, clusters = train_kmeans(df_scaled, n_clusters=4)

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getDiagnostico, getClientes, evaluarCliente, getResultado, checkHealth, ApiError } from '@/lib/api-client';
+import { getDiagnostico, getClientes, evaluarCliente, getResultado, checkHealth, ApiError } from '@/lib/api/client';
 
 const LAST_KEY = 'md:ultima-evaluacion';
 
@@ -19,8 +19,8 @@ export function useApiStatus() {
   }, []);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    refresh();
+    const timer = setTimeout(refresh, 0);
+    return () => clearTimeout(timer);
   }, [refresh]);
 
   return { ...status, refresh };
@@ -35,7 +35,6 @@ export function useDiagnostico() {
   const [stale, setStale] = useState(false);
   const inflight = useRef(false);
 
-  // silent=true refresca sin esqueleto ni recarga: la vista se queda y solo cambian los números.
   const load = useCallback(async (silent = false) => {
     if (silent && inflight.current) return;
     inflight.current = true;
@@ -61,8 +60,7 @@ export function useDiagnostico() {
   }, []);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    load(false);
+    const timer = setTimeout(() => load(false), 0);
     const id = setInterval(() => {
       if (typeof document !== 'undefined' && document.hidden) return;
       load(true);
@@ -73,6 +71,7 @@ export function useDiagnostico() {
     }
     document.addEventListener('visibilitychange', onVisible);
     return () => {
+      clearTimeout(timer);
       clearInterval(id);
       document.removeEventListener('visibilitychange', onVisible);
     };
@@ -81,30 +80,39 @@ export function useDiagnostico() {
   return { data, loading, error, stale, reload: () => load(false) };
 }
 
-export function useClientes() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const d = await getClientes();
-      setData(d.clientes || []);
-    } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Error al cargar clientes.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+export function useClientes(buscar) {
+  const [resultado, setResultado] = useState({ buscar: null, data: [], error: null });
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    load();
-  }, [load]);
+    let activo = true;
+    const texto = buscar.trim();
 
-  return { data, loading, error, reload: load };
+    const temporizador = setTimeout(async () => {
+      try {
+        const respuesta = await getClientes(texto, 20);
+        if (activo) setResultado({ buscar: texto, data: respuesta.clientes || [], error: null });
+      } catch (e) {
+        if (activo) setResultado({
+          buscar: texto,
+          data: [],
+          error: e instanceof ApiError ? e.message : 'Error al buscar clientes.',
+        });
+      }
+    }, texto ? 300 : 0);
+
+    return () => {
+      activo = false;
+      clearTimeout(temporizador);
+    };
+  }, [buscar]);
+
+  const busquedaActual = buscar.trim();
+  const resultadoActual = resultado.buscar === busquedaActual;
+  return {
+    data: resultadoActual ? resultado.data : [],
+    loading: !resultadoActual,
+    error: resultadoActual ? resultado.error : null,
+  };
 }
 
 export function useEvaluarCliente() {  const [loading, setLoading] = useState(false);
@@ -141,7 +149,6 @@ export function useResultado(id) {
   useEffect(() => {
     let alive = true;
     async function run() {
-      // 1. Atajo: si es la última evaluación, úsala sin fetch
       try {
         const raw = localStorage.getItem(LAST_KEY);
         if (raw) {

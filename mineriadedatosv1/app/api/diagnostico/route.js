@@ -1,14 +1,25 @@
-import { jsonMock } from '@/lib/server';
-import { obtener_diagnostico_completo } from './datos';
+import { NextResponse } from 'next/server';
+import { getMetricasDiagnostico } from '@/lib/api/backend';
 
-/**
- * GET /api/diagnostico
- * Toda la lógica vive en ./datos.js: intenta el backend real
- * (GET {BACKEND}/diagnosticos_metricas) con fetch, mapea al formato
- * del front y, si falla, devuelve el contenido fijo de respaldo.
- * Respuesta: { source: 'api'|'mock', ...resumen, kpis[], clusters[] }
- */
+const noStore = { 'Cache-Control': 'no-store, max-age=0' };
+
 export async function GET() {
-  const data = await obtener_diagnostico_completo();
-  return jsonMock(data);
+  
+  const res = await getMetricasDiagnostico();
+
+  if (!res.configured) {
+    return NextResponse.json(
+      { error: 'Configura API_URL para leer el diagnóstico.' },
+      { status: 503, headers: noStore }
+    );
+  }
+
+  if (res.error || !res.data || !Number.isFinite(Number(res.data.base_historica))) {
+    return NextResponse.json(
+      { error: res.error || 'El backend no devolvió las métricas.' },
+      { status: res.status || 502, headers: noStore }
+    );
+  }
+
+  return NextResponse.json(res.data, { headers: noStore });
 }

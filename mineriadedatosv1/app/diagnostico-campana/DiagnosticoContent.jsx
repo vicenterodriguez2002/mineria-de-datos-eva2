@@ -10,15 +10,46 @@ const ACCENTS = {
   indigo: { top: 'border-t-indigo-500', text: 'text-indigo-800', badge: 'text-indigo-700 bg-indigo-100', value: 'text-indigo-900' },
 };
 
-const CLUSTER_STYLES = [
-  { dot: 'bg-indigo-600', card: 'border-indigo-200 bg-indigo-50/40', divider: 'border-indigo-100', meta: 'text-indigo-700' },
-  { dot: 'bg-amber-600', card: 'border-amber-200 bg-amber-50/40', divider: 'border-amber-100', meta: 'text-amber-700' },
-  { dot: 'bg-emerald-600', card: 'border-emerald-200 bg-emerald-50/40', divider: 'border-emerald-100', meta: 'text-emerald-700' },
-  { dot: 'bg-blue-600', card: 'border-blue-200 bg-blue-50/40', divider: 'border-blue-100', meta: 'text-blue-700' },
-];
-
-const fmtPct = (v) => `${Math.round((v ?? 0) * 1000) / 10}%`.replace('.', ',');
+const fmtPct = (v) =>
+  `${Number(v ?? 0).toLocaleString('es-CL', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
 const fmtNum = (v) => Number(v ?? 0).toLocaleString('es-CL');
+
+function cards(data) {
+  return [
+    {
+      id: 'base',
+      label: 'Base Histórica',
+      value: fmtNum(data.base_historica),
+      detail: 'Registros en la base original',
+      accent: 'sky',
+      icon: 'database',
+    },
+    {
+      id: 'response',
+      label: 'Tasa de Aceptación (Response)',
+      value: fmtPct(data.tasa_aceptacion),
+      detail: `${fmtNum(data.total_compradores)} compradores vs ${fmtNum(data.total_rechazos)} rechazos (desbalance)`,
+      accent: 'emerald',
+      icon: 'check',
+    },
+    {
+      id: 'deficit',
+      label: 'Déficit Sin Segmentar',
+      value: `${fmtNum(data.deficit_sin_segmentar)} u.`,
+      detail: `Costo global $${fmtNum(data.costo_global)} vs ingreso $${fmtNum(data.ingreso_global)}`,
+      accent: 'rose',
+      icon: 'trending-down',
+    },
+    {
+      id: 'equilibrio',
+      label: 'Punto de Equilibrio',
+      value: fmtPct(data.punto_equilibrio),
+      detail: 'Fórmula de rentabilidad: Z_Cost / Z_Revenue',
+      accent: 'indigo',
+      icon: 'scale',
+    },
+  ];
+}
 
 function KpiCard({ kpi }) {
   const a = ACCENTS[kpi.accent] || ACCENTS.sky;
@@ -76,7 +107,7 @@ export default function DiagnosticoContent() {
           <div className="text-right">
             <LiveBadge stale={stale} />
             <p className="mt-1 text-xs text-slate-500">
-              {data ? `Base: ${fmtNum(data.base_total)} registros` : 'Base: …'}
+              {data ? `Base: ${fmtNum(data.base_historica)} registros` : 'Base: …'}
             </p>
           </div>
         </div>
@@ -94,8 +125,8 @@ export default function DiagnosticoContent() {
 
         {data && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {(data.kpis || []).map((kpi) => (
-              <KpiCard key={kpi.id || kpi.label} kpi={kpi} />
+            {cards(data).map((kpi) => (
+              <KpiCard key={kpi.id} kpi={kpi} />
             ))}
           </div>
         )}
@@ -114,59 +145,20 @@ export default function DiagnosticoContent() {
             El problema central: ¿por qué contactar a todos destruye valor?
           </h2>
           <p className="text-xs sm:text-sm text-amber-800/90 mt-1 leading-relaxed">
-            En la base completa, contactar a un cliente cuesta{' '}
-            <strong>${data?.z_cost ?? 3} (Z_CostContact)</strong> y cada conversión genera un ingreso
-            promedio de <strong>${data?.z_revenue ?? 11} (Z_Revenue)</strong>. Con una respuesta
-            indiscriminada del <strong>{data ? fmtPct(data.tasa_aceptacion) : '14,9%'}</strong>, la empresa
-            pierde dinero de forma sistemática. Mediante el <strong>Árbol de Decisión</strong> filtramos
-            únicamente clientes con probabilidad superior al umbral comercial{' '}
-            <strong>({data ? fmtPct(data.umbral_equilibrio) : '27,3%'})</strong>, combinándolo con{' '}
-            <strong>K-Means</strong> para entregar la oferta adecuada y <strong>Apriori</strong> para sugerir
-            productos cruzados.
+            {data ? (
+              <>
+                En la base completa, contactar a un cliente cuesta{' '}
+                <strong>${fmtNum(data.z_cost)} (Z_CostContact)</strong> y cada conversión genera un ingreso
+                promedio de <strong>${fmtNum(data.z_revenue)} (Z_Revenue)</strong>. Con una respuesta
+                indiscriminada del <strong>{fmtPct(data.tasa_aceptacion)}</strong>, la empresa pierde dinero
+                de forma sistemática. El punto de equilibrio de esta campaña es{' '}
+                <strong>{fmtPct(data.punto_equilibrio)}</strong>.
+              </>
+            ) : (
+              <>Las cifras de costo, ingreso y umbral aparecen cuando el backend responde.</>
+            )}
           </p>
         </div>
-      </section>
-
-      <section aria-labelledby="segmentos-title">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
-          <h2 id="segmentos-title" className="text-sm font-bold text-slate-800 uppercase tracking-wider font-mono">
-            Segmentos ilustrativos para la demostración
-          </h2>
-          <span className="text-xs text-slate-400 rounded-full border border-slate-200 bg-white px-3 py-1">
-            K = {data?.clusters?.length ?? 4} en esta demostración
-          </span>
-        </div>
-
-        {loading && !data && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" aria-label="Cargando segmentos">
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="h-40 rounded-xl bg-slate-200 animate-pulse" />
-            ))}
-          </div>
-        )}
-
-        {data?.clusters && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {data.clusters.map((c, i) => {
-              const s = CLUSTER_STYLES[c.id ?? i] || CLUSTER_STYLES[i % CLUSTER_STYLES.length];
-              return (
-                <article key={c.id ?? c.nombre} className={`p-4 rounded-xl border ${s.card} flex flex-col justify-between`}>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className={`w-3 h-3 rounded-full ${s.dot}`} aria-hidden="true" />
-                      <h3 className="font-bold text-sm text-slate-900">Cluster {c.id}: {c.nombre}</h3>
-                    </div>
-                    <p className="text-xs text-slate-600 mt-2 leading-relaxed">{c.desc}</p>
-                  </div>
-                  <div className={`mt-4 pt-3 border-t ${s.divider} flex justify-between gap-2 text-[11px] font-mono ${s.meta} font-semibold`}>
-                    <span>{fmtPct(c.pct_base)} base</span>
-                    <span>${fmtNum(c.gasto_prom)} gasto prom.</span>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        )}
       </section>
     </div>
   );
