@@ -1,5 +1,7 @@
 # MINERIA DE DATOS | SEMANA 1
 
+Para ejecutar el backend y el frontend, sigue [INICIAR_PROYECTO.md](INICIAR_PROYECTO.md).
+
 CORREO PROFESOR: [fvargas21@santotomas.cl](mailto:fvargas21@santotomas.cl)
 
 GITHUB: https://github.com/vicenterodriguez2002/mineria-de-datos-eva2
