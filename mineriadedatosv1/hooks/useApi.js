@@ -153,7 +153,7 @@ export function useResultado(id) {
         const raw = localStorage.getItem(LAST_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (!id || parsed.id === id) {
+          if ((!id || parsed.id === id) && Array.isArray(parsed.nube)) {
             if (alive) {
               setData(parsed);
               setLoading(false);

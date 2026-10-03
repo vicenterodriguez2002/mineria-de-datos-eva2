@@ -202,7 +202,9 @@ export default function EvaluadorForm() {
     e.preventDefault();
     if (cargandoDetalle || errorDetalle) return;
     try {
-      const r = await evaluar(form);
+      const cuerpo = { ...form };
+      if (clienteSeleccionado?.value) cuerpo.ID = Number(clienteSeleccionado.value);
+      const r = await evaluar(cuerpo);
       router.push(`/resultado-multimodelo?id=${encodeURIComponent(r.id)}`);
     } catch {
       return;

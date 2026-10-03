@@ -1,6 +1,6 @@
+import axios from 'axios';
 import { NextResponse } from 'next/server';
 import { CLIENTE_SCHEMA, coerceClientePayload } from '@/lib/cliente-schema';
-import { mockEvaluar } from '@/lib/mock';
 
 export async function POST(request) {
   let raw = {};
@@ -40,5 +40,23 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Income debe ser un número ≥ 0.' }, { status: 400 });
   }
 
-  return NextResponse.json(mockEvaluar(payload));
+  const apiUrl = process.env.API_URL;
+  if (!apiUrl) {
+    return NextResponse.json({ error: 'Falta API_URL en .env.local.' }, { status: 503 });
+  }
+
+  try {
+    const response = await axios.post(`${apiUrl}/api/evaluar`, payload, {
+      headers: { 'Content-Type': 'application/json' },
+      timeout: 15000,
+    });
+    return NextResponse.json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 502;
+    const data = error.response?.data;
+    return NextResponse.json(
+      { error: data?.error || data?.message || 'No se pudo alcanzar el backend.' },
+      { status },
+    );
+  }
 }

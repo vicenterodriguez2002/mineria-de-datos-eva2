@@ -29,8 +29,7 @@ export default function ResultadoMultimodelo() {
             </h1>
             <div className="mx-auto mt-6 h-1 w-24 rounded-full bg-st-light" aria-hidden="true" />
             <p className="mx-auto mt-6 max-w-2xl text-lg text-st-darker/70 leading-relaxed">
-              Decisión del modelo, segmento asignado y productos sugeridos.
-              Se carga desde <code className="font-mono text-sm">GET /api/resultado?id=…</code>
+              Aquí ves si conviene contactar al cliente, a qué grupo pertenece y qué productos ofrecerle.
             </p>
             <div className="mt-6 flex justify-center">
               <ApiStatus compact />
